@@ -9,8 +9,9 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'fallback-key-12345')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///reservations.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Only admin needs password now
-ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'Jezera2017')
+# Passwords
+READONLY_PASSWORD = os.environ.get('READONLY_PASSWORD', 'cleaning123')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
 
 db = SQLAlchemy(app)
 
@@ -86,20 +87,29 @@ def admin_logout():
     flash('Logged out from admin mode', 'success')
     return redirect(url_for('admin_login'))
 
-# Read-Only Routes (NO PASSWORD NEEDED!)
-@app.route('/readonly')
-def readonly_access():
-    # Just set readonly mode, no password needed
-    session['readonly_mode'] = True
-    session.pop('admin_logged_in', None)
-    flash('Viewing in read-only mode (Cleaning Crew)', 'success')
-    return redirect(url_for('index'))
+# Read-Only Login Routes
+@app.route('/readonly-login', methods=['GET', 'POST'])
+def readonly_login():
+    if session.get('readonly_mode'):
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        password = request.form.get('password')
+        if password == READONLY_PASSWORD:
+            session['readonly_mode'] = True
+            session.pop('admin_logged_in', None)
+            flash('Logged in as read-only user (Cleaning Crew)', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid password', 'error')
+    
+    return render_template('readonly_login.html')
 
 @app.route('/exit-readonly')
 def exit_readonly():
     session.pop('readonly_mode', None)
     flash('Exited read-only mode', 'success')
-    return redirect(url_for('login_select'))
+    return redirect(url_for('readonly_login'))
 
 # Main Routes
 @app.route('/')

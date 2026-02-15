@@ -428,16 +428,6 @@ footer {
     font-size: 0.9rem;
 }
 
-.admin-badge {
-    display: inline-block;
-    background: #28a745;
-    color: white;
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
 .readonly-login {
     max-width: 500px;
 }

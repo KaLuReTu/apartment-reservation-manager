@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,16 +12,17 @@
         <div class="container">
             <h1>🏠 Apartment Reservation Manager</h1>
             <ul class="nav-links">
-                <li><a href="{{ url_for('index') }}">Dashboard</a></li>
-                <li><a href="{{ url_for('calendar_view') }}">Calendar</a></li>
-                {% if not is_readonly is defined or not is_readonly %}
-                <li><a href="{{ url_for('add_reservation') }}" class="btn-primary">+ Add Reservation</a></li>
-                {% endif %}
-                {% if is_readonly is defined and is_readonly %}
-                <li><span class="readonly-badge">👁️ Read-Only Mode</span></li>
-                <li><a href="{{ url_for('exit_readonly') }}" class="btn-secondary">Exit</a></li>
-                {% else %}
-                <li><a href="{{ url_for('readonly_login') }}" class="btn-secondary">🔒 Read-Only Mode</a></li>
+                {% if is_admin is defined and is_admin %}
+                    <li><a href="{{ url_for('index') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('calendar_view') }}">Calendar</a></li>
+                    <li><a href="{{ url_for('add_reservation') }}" class="btn-primary">+ Add Reservation</a></li>
+                    <li><span class="admin-badge">👨‍💼 Admin</span></li>
+                    <li><a href="{{ url_for('admin_logout') }}" class="btn-secondary">Logout</a></li>
+                {% elif is_readonly is defined and is_readonly %}
+                    <li><a href="{{ url_for('index') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('calendar_view') }}">Calendar</a></li>
+                    <li><span class="readonly-badge">👁️ Read-Only Mode</span></li>
+                    <li><a href="{{ url_for('exit_readonly') }}" class="btn-secondary">Logout</a></li>
                 {% endif %}
             </ul>
         </div>

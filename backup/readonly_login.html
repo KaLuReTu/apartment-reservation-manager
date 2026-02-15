@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Read-Only Access{% endblock %}
+
+{% block content %}
+<div class="form-container readonly-login">
+    <h2>🔒 Read-Only Access</h2>
+    <p class="subtitle">View Only Mode</p>
+    
+    <form method="POST" action="{{ url_for('readonly_login') }}">
+        <div class="form-group">
+            <label for="password">Access Password</label>
+            <input type="password" id="password" name="password" 
+                   placeholder="Enter password" required autofocus>
+            <small>Contact the apartment owner for the password</small>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Access Read-Only Mode</button>
+        </div>
+    </form>
+
+    <div class="readonly-info">
+        <h3>Read-Only Mode Features:</h3>
+        <ul>
+            <li>✅ View all reservations</li>
+            <li>✅ Check guest names and dates</li>
+            <li>✅ See special requests and notes</li>
+            <li>✅ View check-in times</li>
+            <li>❌ Cannot add, edit, or delete reservations</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

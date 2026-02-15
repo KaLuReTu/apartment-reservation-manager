@@ -1,0 +1,110 @@
+
+{% extends "base.html" %}
+
+{% block title %}Login - Reservation Manager{% endblock %}
+
+{% block content %}
+<div class="form-container" style="max-width: 600px;">
+    <h2>🏠 Apartment Reservation Manager</h2>
+    <p class="subtitle">Please select your access level</p>
+    
+    <div class="login-options">
+        <div class="login-card">
+            <div class="login-icon">👨‍💼</div>
+            <h3>Admin Access</h3>
+            <p>Full access to manage reservations</p>
+            <ul class="login-features">
+                <li>✅ Add new reservations</li>
+                <li>✅ Edit existing reservations</li>
+                <li>✅ Delete reservations</li>
+                <li>✅ View all details</li>
+            </ul>
+            <a href="{{ url_for('admin_login') }}" class="btn-primary">🔐 Admin Login (Password Required)</a>
+        </div>
+        
+        <div class="login-card">
+            <div class="login-icon">👁️</div>
+            <h3>View Only Access</h3>
+            <p>Read-only access for cleaning crew</p>
+            <ul class="login-features">
+                <li>✅ View all reservations</li>
+                <li>✅ See check-in/out dates</li>
+                <li>✅ View guest details</li>
+                <li>❌ Cannot edit or delete</li>
+            </ul>
+            <a href="{{ url_for('readonly_access') }}" class="btn-secondary">👁️ View Only (No Password)</a>
+        </div>
+    </div>
+</div>
+
+<style>
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+}
+
+.login-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.login-card {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 12px;
+    border: 2px solid #e0e0e0;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.login-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.2);
+    transform: translateY(-5px);
+}
+
+.login-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.login-card h3 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.login-card p {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.login-features {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+    text-align: left;
+}
+
+.login-features li {
+    padding: 0.5rem 0;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.login-card .btn-primary,
+.login-card .btn-secondary {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .login-options {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

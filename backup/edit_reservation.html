@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Reservation{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Edit Reservation</h2>
+    
+    <form method="POST" action="{{ url_for('edit_reservation', id=reservation.id) }}">
+        <div class="form-group">
+            <label for="guest_name">Guest Name *</label>
+            <input type="text" id="guest_name" name="guest_name" value="{{ reservation.guest_name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="platform">Platform *</label>
+            <select id="platform" name="platform" required>
+                <option value="airbnb" {% if reservation.platform == 'airbnb' %}selected{% endif %}>Airbnb</option>
+                <option value="booking" {% if reservation.platform == 'booking' %}selected{% endif %}>Booking.com</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="check_in">Check-in Date *</label>
+                <input type="date" id="check_in" name="check_in" value="{{ reservation.check_in }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="check_out">Check-out Date *</label>
+                <input type="date" id="check_out" name="check_out" value="{{ reservation.check_out }}" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="adults">Number of Adults *</label>
+                <input type="number" id="adults" name="adults" min="1" value="{{ reservation.adults }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="children">Number of Children</label>
+                <input type="number" id="children" name="children" min="0" value="{{ reservation.children }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="special_requests">Special Requests</label>
+            <textarea id="special_requests" name="special_requests" rows="3">{{ reservation.special_requests or '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="notes">Notes (Check-in time, parking, etc.)</label>
+            <textarea id="notes" name="notes" rows="3">{{ reservation.notes or '' }}</textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Update Reservation</button>
+            <a href="{{ url_for('index') }}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

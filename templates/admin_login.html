@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
+<div class="form-container readonly-login">
+    <h2>🔐 Admin Login</h2>
+    <p class="subtitle">Enter admin password to manage reservations</p>
+    
+    <form method="POST" action="{{ url_for('admin_login') }}">
+        <div class="form-group">
+            <label for="password">Admin Password</label>
+            <input type="password" id="password" name="password" 
+                   placeholder="Enter admin password" required autofocus>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Login as Admin</button>
+        </div>
+    </form>
+
+    <div class="login-footer">
+        <p>Cleaning crew?</p>
+        <a href="{{ url_for('readonly_access') }}" class="btn-secondary">Go to Read-Only Access (No Password)</a>
+    </div>
+    
+    <div class="login-footer" style="margin-top: 1rem;">
+        <a href="{{ url_for('login_select') }}" style="color: #667eea; text-decoration: none;">
+            ← Back to login selection
+        </a>
+    </div>
+</div>
+
+<style>
+.login-footer {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e0e0e0;
+    text-align: center;
+}
+
+.login-footer p {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.login-footer .btn-secondary {
+    width: 100%;
+}
+</style>
+{% endblock %}
