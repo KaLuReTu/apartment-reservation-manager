@@ -10,7 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///reservations.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Read-only mode settings
-READONLY_PASSWORD = os.environ.get('READONLY_PASSWORD', 'cleaning123')  # Change this!
+READONLY_PASSWORD = os.environ.get('READONLY_PASSWORD', 'Jezera2017')  # Change this!
 
 db = SQLAlchemy(app)
 
