@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Calendar View{% endblock %}
+
+{% block content %}
+<div class="calendar-view">
+    <h2>📅 Reservation Calendar</h2>
+    
+    {% if reservations %}
+        <div class="timeline">
+            {% for reservation in reservations %}
+                <div class="timeline-item">
+                    <div class="timeline-marker {{ reservation.platform }}"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <h3>{{ reservation.guest_name }}</h3>
+                            <span class="platform-badge {{ reservation.platform }}">
+                                {% if reservation.platform == 'airbnb' %}
+                                    🏠 Airbnb
+                                {% else %}
+                                    📅 Booking.com
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="timeline-dates">
+                            <span class="date-in">📥 Check-in: {{ reservation.check_in.strftime('%B %d, %Y') }}</span>
+                            <span class="date-out">📤 Check-out: {{ reservation.check_out.strftime('%B %d, %Y') }}</span>
+                            <span class="duration">
+                                ({{ (reservation.check_out - reservation.check_in).days }} night{{ 's' if (reservation.check_out - reservation.check_in).days != 1 else '' }})
+                            </span>
+                        </div>
+                        <div class="timeline-details">
+                            <p>👤 {{ reservation.adults }} adult{{ 's' if reservation.adults != 1 else '' }}
+                            {% if reservation.children > 0 %}
+                                , 👶 {{ reservation.children }} child{{ 'ren' if reservation.children != 1 else '' }}
+                            {% endif %}
+                            </p>
+                            {% if reservation.special_requests %}
+                                <p><strong>Special Requests:</strong> {{ reservation.special_requests }}</p>
+                            {% endif %}
+                            {% if reservation.notes %}
+                                <p><strong>Notes:</strong> {{ reservation.notes }}</p>
+                            {% endif %}
+                        </div>
+                        {% if not is_readonly %}
+                        <div class="timeline-actions">
+                            <a href="{{ url_for('edit_reservation', id=reservation.id) }}" class="btn-edit">Edit</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>📭 No reservations to display</p>
+            <a href="{{ url_for('add_reservation') }}" class="btn-primary">Add Reservation</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
