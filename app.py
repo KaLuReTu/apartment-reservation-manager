@@ -9,12 +9,10 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'fallback-key-12345')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///reservations.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Only admin needs password now
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'Jezera2017')
 
 db = SQLAlchemy(app)
 
-# Database Model
 class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     guest_name = db.Column(db.String(100), nullable=False)
@@ -43,7 +41,6 @@ class Reservation(db.Model):
             'notes': self.notes
         }
 
-# Decorators
 def require_admin(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -62,12 +59,10 @@ def check_readonly(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# Admin Login Routes
 @app.route('/admin-login', methods=['GET', 'POST'])
 def admin_login():
     if session.get('admin_logged_in'):
         return redirect(url_for('index'))
-    
     if request.method == 'POST':
         password = request.form.get('password')
         if password == ADMIN_PASSWORD:
@@ -77,7 +72,6 @@ def admin_login():
             return redirect(url_for('index'))
         else:
             flash('Invalid admin password', 'error')
-    
     return render_template('admin_login.html')
 
 @app.route('/admin-logout')
@@ -86,13 +80,11 @@ def admin_logout():
     flash('Logged out from admin mode', 'success')
     return redirect(url_for('admin_login'))
 
-# Read-Only Routes (NO PASSWORD NEEDED!)
 @app.route('/readonly')
 def readonly_access():
-    # Just set readonly mode, no password needed
     session['readonly_mode'] = True
     session.pop('admin_logged_in', None)
-    flash('Viewing in read-only mode (Cleaning Crew)', 'success')
+    flash('Viewing in read-only mode', 'success')
     return redirect(url_for('index'))
 
 @app.route('/exit-readonly')
@@ -101,27 +93,20 @@ def exit_readonly():
     flash('Exited read-only mode', 'success')
     return redirect(url_for('login_select'))
 
-# Main Routes
 @app.route('/')
 def index():
     if not session.get('admin_logged_in') and not session.get('readonly_mode'):
         return redirect(url_for('login_select'))
-    
     reservations = Reservation.query.order_by(Reservation.check_in).all()
     is_readonly = session.get('readonly_mode', False)
     is_admin = session.get('admin_logged_in', False)
     today = date.today()
-    return render_template('index.html', 
-                         reservations=reservations, 
-                         is_readonly=is_readonly,
-                         is_admin=is_admin,
-                         today=today)
+    return render_template('index.html', reservations=reservations, is_readonly=is_readonly, is_admin=is_admin, today=today)
 
 @app.route('/login-select')
 def login_select():
     if session.get('admin_logged_in') or session.get('readonly_mode'):
         return redirect(url_for('index'))
-    
     return render_template('login_select.html')
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -140,11 +125,9 @@ def add_reservation():
                 special_requests=request.form.get('special_requests', ''),
                 notes=request.form.get('notes', '')
             )
-            
             if reservation.check_out <= reservation.check_in:
                 flash('Check-out date must be after check-in date!', 'error')
                 return redirect(url_for('add_reservation'))
-            
             db.session.add(reservation)
             db.session.commit()
             flash('Reservation added successfully!', 'success')
@@ -152,7 +135,6 @@ def add_reservation():
         except Exception as e:
             flash(f'Error adding reservation: {str(e)}', 'error')
             return redirect(url_for('add_reservation'))
-    
     return render_template('add_reservation.html')
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
@@ -160,7 +142,6 @@ def add_reservation():
 @check_readonly
 def edit_reservation(id):
     reservation = Reservation.query.get_or_404(id)
-    
     if request.method == 'POST':
         try:
             reservation.guest_name = request.form['guest_name']
@@ -171,18 +152,15 @@ def edit_reservation(id):
             reservation.children = int(request.form['children'])
             reservation.special_requests = request.form.get('special_requests', '')
             reservation.notes = request.form.get('notes', '')
-            
             if reservation.check_out <= reservation.check_in:
                 flash('Check-out date must be after check-in date!', 'error')
                 return redirect(url_for('edit_reservation', id=id))
-            
             db.session.commit()
             flash('Reservation updated successfully!', 'success')
             return redirect(url_for('index'))
         except Exception as e:
             flash(f'Error updating reservation: {str(e)}', 'error')
             return redirect(url_for('edit_reservation', id=id))
-    
     return render_template('edit_reservation.html', reservation=reservation)
 
 @app.route('/delete/<int:id>')
@@ -207,14 +185,11 @@ def api_reservations():
 def calendar_view():
     if not session.get('admin_logged_in') and not session.get('readonly_mode'):
         return redirect(url_for('login_select'))
-    
     reservations = Reservation.query.order_by(Reservation.check_in).all()
     is_readonly = session.get('readonly_mode', False)
     is_admin = session.get('admin_logged_in', False)
-    return render_template('calendar.html', 
-                         reservations=reservations, 
-                         is_readonly=is_readonly,
-                         is_admin=is_admin)
+    today = date.today()
+    return render_template('calendar.html', reservations=reservations, is_readonly=is_readonly, is_admin=is_admin, today=today)
 
 if __name__ == '__main__':
     with app.app_context():
